@@ -1,4 +1,4 @@
-import { lectures } from "./lectures/index.js";
+import { lectures } from "./lectures/index.js?v=20260806-2";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
