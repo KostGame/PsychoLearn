@@ -37,6 +37,7 @@ let cardIndex = 0;
 let quizIndex = 0;
 let quizScore = 0;
 let quizAnswered = false;
+let currentQuizOptions = [];
 
 function setText(selector, value) {
   const element = $(selector);
@@ -362,9 +363,19 @@ function resetQuiz() {
   renderQuizQuestion();
 }
 
+function shuffledQuizOptions(options) {
+  const shuffled = options.map((text, answerIndex) => ({ text, answerIndex }));
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
 function renderQuizQuestion() {
   const item = lecture.quiz[quizIndex];
   quizAnswered = false;
+  currentQuizOptions = shuffledQuizOptions(item.options);
   setText("#quiz-counter", `Вопрос ${quizIndex + 1} из ${lecture.quiz.length}`);
   setText("#quiz-score", `${quizScore} верно`);
   setText("#quiz-question", item.question);
@@ -375,10 +386,10 @@ function renderQuizQuestion() {
   $("#quiz-next").textContent =
     quizIndex === lecture.quiz.length - 1 ? "Показать результат →" : "Следующий вопрос →";
 
-  $("#quiz-options").innerHTML = item.options
+  $("#quiz-options").innerHTML = currentQuizOptions
     .map(
       (option, index) =>
-        `<button class="quiz-option" type="button" data-option="${index}">${escapeHtml(option)}</button>`,
+        `<button class="quiz-option" type="button" data-option="${index}">${escapeHtml(option.text)}</button>`,
     )
     .join("");
   $$(".quiz-option").forEach((button) => {
@@ -390,14 +401,16 @@ function answerQuiz(selectedIndex) {
   if (quizAnswered) return;
   quizAnswered = true;
   const item = lecture.quiz[quizIndex];
-  const correct = selectedIndex === item.answer;
+  const selectedAnswerIndex = currentQuizOptions[selectedIndex]?.answerIndex;
+  const correct = selectedAnswerIndex === item.answer;
   if (correct) quizScore += 1;
 
   $$(".quiz-option").forEach((button) => {
-    const index = Number(button.dataset.option);
+    const displayedIndex = Number(button.dataset.option);
+    const answerIndex = currentQuizOptions[displayedIndex]?.answerIndex;
     button.disabled = true;
-    button.classList.toggle("is-correct", index === item.answer);
-    button.classList.toggle("is-wrong", index === selectedIndex && !correct);
+    button.classList.toggle("is-correct", answerIndex === item.answer);
+    button.classList.toggle("is-wrong", displayedIndex === selectedIndex && !correct);
   });
 
   const feedback = $("#quiz-feedback");
