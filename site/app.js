@@ -1,4 +1,4 @@
-import { lectures } from "./lectures/index.js?v=20260806-2";
+import { lectures } from "./lectures/index.js?v=20260807-1";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -149,6 +149,9 @@ function renderSection(section, index) {
         )
         .join("")}</div>`
     : "";
+  const figures = section.figures?.length
+    ? `<div class="section-figures">${section.figures.map(renderFigure).join("")}</div>`
+    : "";
   const list = section.points?.length
     ? `<h3>${escapeHtml(section.listTitle)}</h3><ul>${section.points
         .map((point) => `<li>${escapeHtml(point)}</li>`)
@@ -161,6 +164,12 @@ function renderSection(section, index) {
     ...section.paragraphs,
     ...(section.points || []),
     ...(section.timeline || []).flatMap((item) => [item.title, item.text]),
+    ...(section.figures || []).flatMap((figure) => [
+      figure.title,
+      figure.caption,
+      figure.note,
+      ...(figure.items || []).flatMap((item) => [item.label, item.value]),
+    ]),
     section.memory,
   ]
     .join(" ")
@@ -181,6 +190,7 @@ function renderSection(section, index) {
         <p class="section-lead">${escapeHtml(section.lead)}</p>
         ${paragraphs}
         ${timeline}
+        ${figures}
         ${list}
         <div class="memory-note">Запомнить: ${escapeHtml(section.memory)}</div>
         <div class="section-footer">
@@ -188,6 +198,37 @@ function renderSection(section, index) {
         </div>
       </div>
     </details>`;
+}
+
+function renderFigure(figure) {
+  const items = figure.items || [];
+  const max = Number(figure.max) || Math.max(...items.map((item) => Math.abs(Number(item.value))), 1);
+  const rows = items
+    .map((item) => {
+      const value = Number(item.value);
+      const width = Math.min(50, (Math.abs(value) / max) * 50);
+      const left = value < 0 ? 50 - width : 50;
+      const valueLabel = figure.suffix ? `${value}${figure.suffix}` : String(value).replace(".", ",");
+
+      return `<div class="chart-row">
+        <span class="chart-label">${escapeHtml(item.label)}</span>
+        <span class="chart-track" aria-hidden="true">
+          <span class="chart-bar ${value < 0 ? "is-negative" : "is-positive"}" style="left:${left}%;width:${width}%"></span>
+        </span>
+        <strong>${escapeHtml(valueLabel)}</strong>
+      </div>`;
+    })
+    .join("");
+  const original = figure.image
+    ? `<details class="original-figure"><summary>Посмотреть исходный рисунок из лекции</summary><a href="${escapeHtml(figure.image)}" target="_blank" rel="noopener"><img src="${escapeHtml(figure.image)}" alt="${escapeHtml(figure.imageAlt || figure.title)}" loading="lazy"></a></details>`
+    : "";
+
+  return `<figure class="data-figure">
+    <figcaption><strong>${escapeHtml(figure.title)}</strong><span>${escapeHtml(figure.caption || "")}</span></figcaption>
+    <div class="responsive-chart" role="img" aria-label="${escapeHtml(figure.ariaLabel || figure.title)}">${rows}</div>
+    ${figure.note ? `<p class="figure-note">${escapeHtml(figure.note)}</p>` : ""}
+    ${original}
+  </figure>`;
 }
 
 function toggleComplete(sectionId) {
