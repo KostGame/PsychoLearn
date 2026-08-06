@@ -7,6 +7,7 @@
 ## Что уже есть
 
 - тема 9 «Безопасность личности в экстремальных ситуациях»;
+- тема 11 «Социальная стабильность и психологическая безопасность»;
 - режим «Суть за 5 минут»;
 - структурированный конспект с поиском и настройкой размера текста;
 - сохранение прогресса на устройстве;
@@ -25,8 +26,10 @@ site/
   lectures/
     index.js              реестр лекций
     lecture-09.js         содержание темы 9
+    lecture-11.js         содержание темы 11
 notes/
   09-safety-in-extreme-situations.md
+  11-social-stability-and-psychological-safety.md
 .github/workflows/pages.yml
 ```
 
@@ -42,4 +45,3 @@ notes/
 ```bash
 python3 -m http.server 8000 --directory site
 ```
-

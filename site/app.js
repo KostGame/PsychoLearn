@@ -85,6 +85,19 @@ function renderLecture() {
   setText("#source-title", lecture.source.label);
   setText("#source-bibliography", lecture.source.bibliography);
 
+  const conceptChain = lecture.conceptChain || [];
+  const conceptChainElement = $("#concept-chain");
+  conceptChainElement.setAttribute(
+    "aria-label",
+    lecture.conceptLabel || conceptChain.map((item) => item.title).join(", "),
+  );
+  conceptChainElement.innerHTML = conceptChain
+    .map(
+      (item, index) =>
+        `<div><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></div>`,
+    )
+    .join("");
+
   $("#takeaway-grid").innerHTML = lecture.takeaways
     .map((item) => `<li>${escapeHtml(item)}</li>`)
     .join("");
@@ -407,6 +420,8 @@ function attachEvents() {
     lecture = selected;
     completed = new Set(storage.get(`psycholearn:${lecture.id}:completed`, []));
     cardIndex = 0;
+    $("#reader-search").value = "";
+    setText("#search-status", "");
     const params = new URLSearchParams(location.search);
     params.set("lecture", lecture.id);
     history.replaceState({}, "", `${location.pathname}?${params.toString()}#overview`);
