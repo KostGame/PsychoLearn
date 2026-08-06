@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="PsychoLearn: короткие конспекты, карточки и тесты по психологии."
+    />
+    <meta name="theme-color" content="#f4f1ea" />
+    <title>PsychoLearn · Психология без воды</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Перейти к содержанию</a>
+
+    <div class="page-progress" aria-hidden="true">
+      <span id="page-progress-bar"></span>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="PsychoLearn, на главную">
+        <span class="brand-mark" aria-hidden="true">ψ</span>
+        <span>
+          <strong>PsychoLearn</strong>
+          <small>Психология без воды</small>
+        </span>
+      </a>
+
+      <div class="topbar-actions">
+        <label class="lecture-picker-label" for="lecture-picker">Лекция</label>
+        <select id="lecture-picker" class="lecture-picker" aria-label="Выбрать лекцию"></select>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Переключить тему">
+          <span class="theme-icon" aria-hidden="true">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="content">
+      <section class="view is-active" id="view-overview" data-view="overview">
+        <div class="hero-shell">
+          <div class="hero-copy">
+            <div class="eyebrow" id="hero-course"></div>
+            <h1 id="hero-title"></h1>
+            <p class="hero-description" id="hero-description"></p>
+
+            <div class="hero-meta" aria-label="Параметры лекции">
+              <span id="hero-time"></span>
+              <span id="hero-sections"></span>
+              <span id="hero-cards"></span>
+            </div>
+
+            <div class="hero-actions">
+              <button class="primary-button" type="button" data-go="reader">
+                Читать конспект
+                <span aria-hidden="true">→</span>
+              </button>
+              <button class="secondary-button" type="button" data-go="cards">Повторить карточки</button>
+            </div>
+          </div>
+
+          <aside class="progress-card" aria-label="Прогресс лекции">
+            <div class="progress-orbit" id="progress-orbit" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+              <span id="progress-percent">0%</span>
+            </div>
+            <div>
+              <strong>Прогресс</strong>
+              <p id="progress-caption">Начните с первого раздела</p>
+            </div>
+          </aside>
+        </div>
+
+        <section class="section-shell essence-section" aria-labelledby="essence-title">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Суть за 5 минут</span>
+              <h2 id="essence-title">Что нужно понять и запомнить</h2>
+            </div>
+            <button class="text-button" type="button" data-go="quiz">Проверить себя →</button>
+          </div>
+          <ol class="takeaway-grid" id="takeaway-grid"></ol>
+        </section>
+
+        <section class="section-shell formula-section" aria-labelledby="formula-title">
+          <span class="eyebrow">Карта темы</span>
+          <h2 id="formula-title">Логика лекции в одной цепочке</h2>
+          <div class="concept-chain" aria-label="Угроза приводит к оценке ресурсов, затем к реакции, поведению и последствиям">
+            <div><span>01</span><strong>Угроза</strong><small>объективная или субъективная</small></div>
+            <div><span>02</span><strong>Оценка ресурсов</strong><small>опыт, знания, поддержка</small></div>
+            <div><span>03</span><strong>Реакция</strong><small>страх, шок, возбуждение</small></div>
+            <div><span>04</span><strong>Стратегия</strong><small>борьба, бегство, бездействие</small></div>
+            <div><span>05</span><strong>Адаптация</strong><small>разрешение и восстановление</small></div>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="view-reader" data-view="reader" hidden>
+        <div class="reader-layout">
+          <aside class="reader-sidebar" aria-label="Содержание лекции">
+            <div class="sidebar-sticky">
+              <span class="eyebrow">Содержание</span>
+              <nav id="section-nav"></nav>
+              <div class="sidebar-progress">
+                <span>Изучено</span>
+                <strong id="sidebar-progress-value">0 из 0</strong>
+              </div>
+            </div>
+          </aside>
+
+          <div class="reader-main">
+            <header class="reader-header">
+              <button class="back-button" type="button" data-go="overview">← Обзор</button>
+              <span class="eyebrow" id="reader-number"></span>
+              <h1 id="reader-title"></h1>
+              <p id="reader-description"></p>
+            </header>
+
+            <div class="reader-tools" aria-label="Инструменты чтения">
+              <label class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <span class="sr-only">Поиск по конспекту</span>
+                <input id="reader-search" type="search" placeholder="Найти понятие…" autocomplete="off" />
+              </label>
+              <div class="font-controls" aria-label="Размер текста">
+                <button type="button" id="font-decrease" aria-label="Уменьшить текст">А−</button>
+                <button type="button" id="font-increase" aria-label="Увеличить текст">А+</button>
+              </div>
+              <button class="compact-control" type="button" id="toggle-sections">Раскрыть всё</button>
+            </div>
+
+            <p class="search-status" id="search-status" role="status" aria-live="polite"></p>
+            <div class="reader-sections" id="reader-sections"></div>
+
+            <section class="terms-section" id="terms" aria-labelledby="terms-title">
+              <div class="section-heading compact">
+                <div>
+                  <span class="eyebrow">Словарь</span>
+                  <h2 id="terms-title">Опорные понятия</h2>
+                </div>
+              </div>
+              <dl class="terms-grid" id="terms-grid"></dl>
+            </section>
+
+            <section class="source-card" aria-labelledby="source-title">
+              <span class="eyebrow">Источник</span>
+              <h2 id="source-title"></h2>
+              <p id="source-bibliography"></p>
+              <p class="source-note">Конспект сокращает и структурирует исходную лекцию. Спорные формулировки помечены отдельно.</p>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-cards" data-view="cards" hidden>
+        <div class="practice-shell">
+          <header class="practice-header">
+            <button class="back-button" type="button" data-go="overview">← Обзор</button>
+            <span class="eyebrow">Активное повторение</span>
+            <h1>Карточки</h1>
+            <p>Попробуйте ответить, затем переверните карточку. На компьютере можно нажать пробел.</p>
+          </header>
+
+          <div class="card-progress-row">
+            <span id="card-counter">1 / 1</span>
+            <div class="mini-progress"><span id="card-progress"></span></div>
+          </div>
+
+          <button class="flashcard" id="flashcard" type="button" aria-label="Перевернуть карточку">
+            <span class="flashcard-side flashcard-front">
+              <small>Вопрос</small>
+              <strong id="flashcard-front"></strong>
+              <em>Нажмите, чтобы увидеть ответ</em>
+            </span>
+            <span class="flashcard-side flashcard-back">
+              <small>Ответ</small>
+              <strong id="flashcard-back"></strong>
+              <em>Нажмите, чтобы вернуть вопрос</em>
+            </span>
+          </button>
+
+          <div class="practice-controls">
+            <button class="secondary-button" id="card-prev" type="button">← Назад</button>
+            <button class="primary-button" id="card-next" type="button">Дальше →</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-quiz" data-view="quiz" hidden>
+        <div class="practice-shell quiz-shell">
+          <header class="practice-header">
+            <button class="back-button" type="button" data-go="overview">← Обзор</button>
+            <span class="eyebrow">Самопроверка</span>
+            <h1>Мини-тест</h1>
+            <p>Десять вопросов по главным идеям лекции. Результат останется только на этом устройстве.</p>
+          </header>
+
+          <div id="quiz-stage">
+            <div class="quiz-progress-row">
+              <span id="quiz-counter">Вопрос 1 из 10</span>
+              <strong id="quiz-score">0 верно</strong>
+            </div>
+            <div class="mini-progress"><span id="quiz-progress"></span></div>
+            <section class="quiz-card" aria-live="polite">
+              <h2 id="quiz-question"></h2>
+              <div class="quiz-options" id="quiz-options"></div>
+              <div class="quiz-feedback" id="quiz-feedback" hidden></div>
+              <button class="primary-button quiz-next" id="quiz-next" type="button" disabled>Следующий вопрос →</button>
+            </section>
+          </div>
+
+          <section class="quiz-result" id="quiz-result" hidden aria-live="polite">
+            <span class="result-mark" aria-hidden="true">ψ</span>
+            <span class="eyebrow">Готово</span>
+            <h2 id="result-title"></h2>
+            <p id="result-copy"></p>
+            <strong id="result-score"></strong>
+            <div class="hero-actions result-actions">
+              <button class="primary-button" id="quiz-restart" type="button">Пройти ещё раз</button>
+              <button class="secondary-button" type="button" data-go="reader">Вернуться к конспекту</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Основная навигация">
+      <button class="is-active" type="button" data-go="overview">
+        <span aria-hidden="true">⌂</span>
+        <small>Главное</small>
+      </button>
+      <button type="button" data-go="reader">
+        <span aria-hidden="true">≡</span>
+        <small>Конспект</small>
+      </button>
+      <button type="button" data-go="cards">
+        <span aria-hidden="true">◇</span>
+        <small>Карточки</small>
+      </button>
+      <button type="button" data-go="quiz">
+        <span aria-hidden="true">✓</span>
+        <small>Тест</small>
+      </button>
+    </nav>
+
+    <noscript>
+      <div class="noscript">Для карточек, теста и навигации нужен JavaScript.</div>
+    </noscript>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
