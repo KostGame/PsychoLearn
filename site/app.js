@@ -1,4 +1,4 @@
-import { lectures } from "./lectures/index.js?v=20260807-1";
+import { lectures } from "./lectures/index.js?v=20260811-1";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -220,13 +220,26 @@ function renderFigure(figure) {
       </div>`;
     })
     .join("");
-  const original = figure.image
+  const diagram = figure.nodes?.length
+    ? `<div class="figure-diagram" data-layout="${escapeHtml(figure.layout || "components")}" role="img" aria-label="${escapeHtml(figure.ariaLabel || figure.title)}">${figure.nodes
+        .map(
+          (node) =>
+            `<div class="diagram-node"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(node.text)}</span></div>`,
+        )
+        .join("")}</div>`
+    : "";
+  const inlineImage = figure.image && figure.inlineImage
+    ? `<img class="figure-inline-image" src="${escapeHtml(figure.image)}" alt="${escapeHtml(figure.imageAlt || figure.title)}" loading="lazy">`
+    : "";
+  const original = figure.image && !figure.inlineImage
     ? `<details class="original-figure"><summary>Посмотреть исходный рисунок из лекции</summary><a href="${escapeHtml(figure.image)}" target="_blank" rel="noopener"><img src="${escapeHtml(figure.image)}" alt="${escapeHtml(figure.imageAlt || figure.title)}" loading="lazy"></a></details>`
     : "";
 
   return `<figure class="data-figure">
     <figcaption><strong>${escapeHtml(figure.title)}</strong><span>${escapeHtml(figure.caption || "")}</span></figcaption>
-    <div class="responsive-chart" role="img" aria-label="${escapeHtml(figure.ariaLabel || figure.title)}">${rows}</div>
+    ${diagram}
+    ${items.length ? `<div class="responsive-chart" role="img" aria-label="${escapeHtml(figure.ariaLabel || figure.title)}">${rows}</div>` : ""}
+    ${inlineImage}
     ${figure.note ? `<p class="figure-note">${escapeHtml(figure.note)}</p>` : ""}
     ${original}
   </figure>`;
