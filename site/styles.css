@@ -640,7 +640,7 @@ main {
   display: none;
 }
 
-.lecture-section summary {
+.lecture-section > summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 32px;
   gap: 14px;
@@ -650,11 +650,11 @@ main {
   list-style: none;
 }
 
-.lecture-section summary::-webkit-details-marker {
+.lecture-section > summary::-webkit-details-marker {
   display: none;
 }
 
-.lecture-section summary::after {
+.lecture-section > summary::after {
   content: "+";
   display: grid;
   place-items: center;
@@ -668,12 +668,12 @@ main {
   transition: transform 180ms ease;
 }
 
-.lecture-section[open] summary::after {
+.lecture-section[open] > summary::after {
   content: "−";
   transform: rotate(180deg);
 }
 
-.lecture-section summary small {
+.lecture-section > summary small {
   display: block;
   margin-bottom: 5px;
   color: var(--sage);
@@ -683,7 +683,7 @@ main {
   text-transform: uppercase;
 }
 
-.lecture-section summary h2 {
+.lecture-section > summary h2 {
   margin: 0;
   font-family: var(--font-serif);
   font-size: 25px;
@@ -901,13 +901,17 @@ main {
 
 .timeline-item {
   position: relative;
-  padding: 15px 16px 15px 48px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface-solid);
+  overflow: hidden;
 }
 
-.timeline-item::before {
+.timeline-item-static {
+  padding: 15px 16px 15px 48px;
+}
+
+.timeline-item-static::before {
   content: "";
   position: absolute;
   left: 19px;
@@ -920,14 +924,108 @@ main {
   box-shadow: 0 0 0 1px var(--violet);
 }
 
-.timeline-item strong {
+.timeline-item > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+  padding: 15px 16px 15px 48px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.timeline-item > summary::-webkit-details-marker {
+  display: none;
+}
+
+.timeline-item > summary::before {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 21px;
+  width: 10px;
+  height: 10px;
+  border: 3px solid var(--surface-solid);
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 0 1px var(--violet);
+}
+
+.timeline-item > summary::after {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--violet);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.timeline-item[open] > summary::after {
+  content: "−";
+}
+
+.timeline-summary strong {
   display: block;
   margin-bottom: 4px;
 }
 
-.timeline-item p {
-  margin: 0;
+.timeline-summary small {
+  display: block;
   color: var(--muted);
+  font-size: 0.94em;
+  line-height: 1.55;
+}
+
+.timeline-detail {
+  padding: 16px 18px 18px 48px;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--violet-soft) 28%, var(--surface-solid));
+}
+
+.timeline-detail p {
+  margin: 0;
+}
+
+.timeline-detail p + p {
+  margin-top: 10px;
+}
+
+.timeline-takeaway {
+  display: grid;
+  gap: 3px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border-left: 3px solid var(--violet);
+  border-radius: 3px 10px 10px 3px;
+  background: var(--surface);
+}
+
+.timeline-takeaway strong {
+  font-size: 0.76em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timeline-takeaway span {
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .timeline-item > summary,
+  .timeline-detail,
+  .timeline-item-static {
+    padding-left: 42px;
+  }
+
+  .timeline-item > summary::before,
+  .timeline-item-static::before {
+    left: 16px;
+  }
 }
 
 .memory-note {

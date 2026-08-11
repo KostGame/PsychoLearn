@@ -1,4 +1,4 @@
-import { lectures } from "./lectures/index.js?v=20260811-1";
+import { lectures } from "./lectures/index.js?v=20260811-2";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -144,10 +144,30 @@ function renderSection(section, index) {
     .join("");
   const timeline = section.timeline
     ? `<div class="timeline">${section.timeline
-        .map(
-          (item) =>
-            `<div class="timeline-item"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></div>`,
-        )
+        .map((item) => {
+          const hasDetails = item.details?.length || item.takeaway;
+          if (!hasDetails) {
+            return `<div class="timeline-item timeline-item-static">
+              <span class="timeline-summary">
+                <strong>${escapeHtml(item.title)}</strong>
+                <small>${escapeHtml(item.text)}</small>
+              </span>
+            </div>`;
+          }
+
+          return `<details class="timeline-item">
+            <summary>
+              <span class="timeline-summary">
+                <strong>${escapeHtml(item.title)}</strong>
+                <small>${escapeHtml(item.text)}</small>
+              </span>
+            </summary>
+            <div class="timeline-detail">
+              ${(item.details || []).map((detail) => `<p>${escapeHtml(detail)}</p>`).join("")}
+              ${item.takeaway ? `<div class="timeline-takeaway"><strong>Что запомнить</strong><span>${escapeHtml(item.takeaway)}</span></div>` : ""}
+            </div>
+          </details>`;
+        })
         .join("")}</div>`
     : "";
   const figures = section.figures?.length
@@ -164,7 +184,12 @@ function renderSection(section, index) {
     section.lead,
     ...section.paragraphs,
     ...(section.points || []),
-    ...(section.timeline || []).flatMap((item) => [item.title, item.text]),
+    ...(section.timeline || []).flatMap((item) => [
+      item.title,
+      item.text,
+      ...(item.details || []),
+      item.takeaway,
+    ]),
     ...(section.figures || []).flatMap((figure) => [
       figure.title,
       figure.caption,
